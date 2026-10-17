@@ -1,0 +1,24 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          use-mathlib-cache: false
+          use-github-cache: false
+      - name: Fetch the required Mathlib cache
+        run: lake exe cache get Mathlib.Algebra.Ring.Nat Mathlib.Order.Monotone.Basic Mathlib.Tactic.Ring
+      - name: Verify every module and audit axioms
+        run: python3 verify.py
