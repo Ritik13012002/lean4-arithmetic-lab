@@ -19,6 +19,6 @@ jobs:
           use-mathlib-cache: false
           use-github-cache: false
       - name: Fetch the required Mathlib cache
-        run: lake exe cache get Mathlib.Algebra.Ring.Nat Mathlib.Order.Monotone.Basic Mathlib.Tactic.Ring
+        run: lake exe cache get Mathlib.Algebra.Ring.Nat Mathlib.Order.Monotone.Basic Mathlib.Tactic.Ring Mathlib.Data.Nat.ModEq
       - name: Verify every module and audit axioms
         run: python3 verify.py

@@ -1,17 +1,23 @@
-# lean4-proof-review
+# Lean Arithmetic Lab
 
-This project contains Lean 4 proofs for arithmetic and finite sums. It also
-contains four constructed proof-review examples. These are standard mathematical
-results, not new discoveries or records of work for an employer.
+A learning project in Lean 4 about arithmetic, recursive algorithms, and modular
+equations. The development starts with finite sums, then moves to a division
+algorithm, loop invariants, and uniqueness of solutions.
 
-- `LeanProofReview/Arithmetic.lean`: parity, divisibility, remainders, subtraction,
-  and cancellation, with the required assumptions.
-- `LeanProofReview/FiniteSums.lean`: recursive sums and their formulas, proved by
-  induction, plus consequences connecting the sums.
-- `LeanProofReview/ReviewCases.lean`: checked counterexamples and a quantifier gap.
-- `LeanProofReview/AxiomAudit.lean`: an enforced audit of transitive axiom dependencies.
+- `LeanArithmeticLab/Arithmetic.lean`: parity, divisibility, remainders, and
+  cancellation over natural numbers.
+- `LeanArithmeticLab/FiniteSums.lean`: recursive sums of natural numbers, odd numbers,
+  and squares, with formulas established by induction.
+- `LeanArithmeticLab/Division.lean`: division by repeated subtraction, a
+  termination argument, an accumulator invariant, and a unique quotient and remainder.
+- `LeanArithmeticLab/Congruences.lean`: affine maps modulo a number and a unique
+  bounded solution to two congruences with coprime moduli.
+- `LeanArithmeticLab/Counterexamples.lean`: examples showing why hypotheses,
+  bounds, and quantifiers matter.
+- `LeanArithmeticLab/AxiomAudit.lean`: enforced checks on theorem dependencies.
 
-See [REVIEW_NOTES.md](REVIEW_NOTES.md) for the four cases.
+[NOTES.md](NOTES.md) connects the examples to the statements they help explain.
+The mathematics is standard; this project is a worked formalization for study.
 
 ## Setup and verification
 
@@ -22,9 +28,9 @@ Make `lake` and `python` available on your PATH. Elan selects Lean 4.35.0 from
 dependencies recorded in `lake-manifest.json`.
 
 ```sh
-git clone https://github.com/Ritik13012002/lean4-proof-review.git
-cd lean4-proof-review
-lake exe cache get Mathlib.Algebra.Ring.Nat Mathlib.Order.Monotone.Basic Mathlib.Tactic.Ring
+git clone https://github.com/Ritik13012002/lean4-arithmetic-lab.git
+cd lean4-arithmetic-lab
+lake exe cache get Mathlib.Algebra.Ring.Nat Mathlib.Order.Monotone.Basic Mathlib.Tactic.Ring Mathlib.Data.Nat.ModEq
 python verify.py
 ```
 
@@ -34,22 +40,25 @@ On systems where Python is named `python3`, use `python3 verify.py`.
 To rebuild the project from clean local outputs, keeping the dependency cache:
 
 ```sh
-lake clean lean4-proof-review
+lake clean lean4-arithmetic-lab
 python verify.py
 ```
 
-`python verify.py` builds the root and every module under `LeanProofReview/`,
-checks project sources for unfinished proof constructs, and runs a fresh axiom
-audit over all of those imported modules. It fails on any failed check. The audit
-discovers theorem declarations by their defining module, including private and
-generated theorems; it does not rely on a manually maintained theorem list or a
-text search. It rejects project axioms and any transitive theorem dependency
-outside `propext`, `Classical.choice`, and `Quot.sound`.
+`python verify.py` builds the root and every module under `LeanArithmeticLab/`,
+checks project sources for unfinished terms, and runs a fresh axiom audit over
+all of those modules. It fails on any failed check. The audit discovers theorem
+declarations by their defining module, including private and generated theorems.
+It rejects project axioms and transitive dependencies outside `propext`,
+`Classical.choice`, and `Quot.sound`.
 
-The source check is conservative and may also flag forbidden words in comments.
-The audit checks proof dependencies, not whether an English description is the
-right specification. Read the statements and assumptions alongside the notes.
+The source check is conservative and may flag forbidden words in comments.
+The dependency audit does not establish that an English description matches its
+formal statement. Read the types and assumptions alongside the notes.
 
-GitHub Actions runs the same verification: [CI workflow](https://github.com/Ritik13012002/lean4-proof-review/actions/workflows/ci.yml).
+The division algorithm favors a simple invariant over speed: it performs one
+subtraction per quotient step. It is not a replacement for Lean's efficient
+built-in division.
 
-Code and review examples were generated with Codex.
+GitHub Actions runs the same verification: [CI workflow](https://github.com/Ritik13012002/lean4-arithmetic-lab/actions/workflows/ci.yml).
+
+Code and examples were generated with Codex.

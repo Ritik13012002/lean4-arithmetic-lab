@@ -1,12 +1,12 @@
 module
 
-public import LeanProofReview.Arithmetic
+public import LeanArithmeticLab.Arithmetic
 public import Mathlib.Order.Monotone.Basic
 public import Mathlib.Tactic.Ring
 
 public section
 
-namespace LeanProofReview
+namespace LeanArithmeticLab
 
 @[expose] def sumFirst : ℕ → ℕ
   | 0 => 0
@@ -15,6 +15,10 @@ namespace LeanProofReview
 @[expose] def sumOdds : ℕ → ℕ
   | 0 => 0
   | n + 1 => sumOdds n + (2 * n + 1)
+
+@[expose] def sumSquares : ℕ → ℕ
+  | 0 => 0
+  | n + 1 => sumSquares n + (n + 1) ^ 2
 
 theorem twice_sumFirst (n : ℕ) : 2 * sumFirst n = n * (n + 1) := by
   induction n with
@@ -50,4 +54,26 @@ theorem sumOdds_add_index (n : ℕ) : sumOdds n + n = 2 * sumFirst n := by
   rw [sumOdds_square, twice_sumFirst]
   ring
 
-end LeanProofReview
+/-- Keeping the formula in multiplication form avoids truncated division. -/
+theorem six_mul_sumSquares (n : ℕ) :
+    6 * sumSquares n = n * (n + 1) * (2 * n + 1) := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    calc
+      6 * sumSquares (n + 1) = 6 * sumSquares n + 6 * (n + 1) ^ 2 := by
+        simp only [sumSquares, Nat.mul_add]
+      _ = n * (n + 1) * (2 * n + 1) + 6 * (n + 1) ^ 2 := by rw [ih]
+      _ = (n + 1) * ((n + 1) + 1) * (2 * (n + 1) + 1) := by ring
+
+theorem sumSquares_eq_polynomial (n : ℕ) :
+    sumSquares n = n * (n + 1) * (2 * n + 1) / 6 := by
+  rw [← six_mul_sumSquares]
+  omega
+
+/-- The square-sum formula also establishes exact divisibility by six. -/
+theorem six_dvd_square_sum_numerator (n : ℕ) :
+    6 ∣ n * (n + 1) * (2 * n + 1) := by
+  exact ⟨sumSquares n, (six_mul_sumSquares n).symm⟩
+
+end LeanArithmeticLab

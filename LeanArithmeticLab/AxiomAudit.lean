@@ -1,8 +1,10 @@
 module
 
-import all LeanProofReview.Arithmetic
-import all LeanProofReview.FiniteSums
-import all LeanProofReview.ReviewCases
+import all LeanArithmeticLab.Arithmetic
+import all LeanArithmeticLab.FiniteSums
+import all LeanArithmeticLab.Division
+import all LeanArithmeticLab.Congruences
+import all LeanArithmeticLab.Counterexamples
 public meta import Lean.Util.CollectAxioms
 public meta import Lean.Elab.Command
 
@@ -20,7 +22,7 @@ elab "#audit_project" : command => do
     let owner := match env.getModuleIdxFor? name with
       | some idx => modules[idx]!
       | none => env.mainModule
-    unless owner == `LeanProofReview || (`LeanProofReview).isPrefixOf owner do
+    unless owner == `LeanArithmeticLab || (`LeanArithmeticLab).isPrefixOf owner do
       continue
     match info with
     | .axiomInfo _ => throwError "Project axiom is forbidden: {name}"

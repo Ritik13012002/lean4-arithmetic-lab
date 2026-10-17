@@ -4,7 +4,7 @@ public import Mathlib.Algebra.Ring.Nat
 
 public section
 
-namespace LeanProofReview
+namespace LeanArithmeticLab
 
 /-- Exactly one of two consecutive natural numbers has remainder one modulo two. -/
 theorem consecutive_parity (n : ℕ) : n % 2 + (n + 1) % 2 = 1 := by
@@ -33,4 +33,4 @@ theorem mul_cancel_right_iff (a b c : ℕ) (hc : c ≠ 0) :
   · intro h
     simp only [h]
 
-end LeanProofReview
+end LeanArithmeticLab

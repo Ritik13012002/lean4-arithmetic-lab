@@ -9,12 +9,13 @@ import tempfile
 
 def main():
     root = Path(__file__).resolve().parent
-    sources = [root / "LeanProofReview.lean", *sorted((root / "LeanProofReview").rglob("*.lean"))]
-    if len(sources) < 5 or any(not path.is_file() for path in sources):
+    sources = [root / "LeanArithmeticLab.lean", *sorted((root / "LeanArithmeticLab").rglob("*.lean"))]
+    if len(sources) < 7 or any(not path.is_file() for path in sources):
         raise RuntimeError("Required project source files are missing")
     modules = [".".join(path.relative_to(root).with_suffix("").parts) for path in sources]
-    required = {"LeanProofReview", "LeanProofReview.Arithmetic", "LeanProofReview.FiniteSums",
-                "LeanProofReview.ReviewCases", "LeanProofReview.AxiomAudit"}
+    required = {"LeanArithmeticLab", "LeanArithmeticLab.Arithmetic", "LeanArithmeticLab.FiniteSums",
+                "LeanArithmeticLab.Counterexamples", "LeanArithmeticLab.AxiomAudit",
+                "LeanArithmeticLab.Division", "LeanArithmeticLab.Congruences"}
     if not required.issubset(modules):
         raise RuntimeError("Required project modules are missing")
     # A conservative source check supplements, but does not replace, the environment audit.
@@ -22,7 +23,7 @@ def main():
     for path in sources:
         for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
             if forbidden.search(line):
-                raise RuntimeError(f"Forbidden proof construct at {path.relative_to(root)}:{number}")
+                raise RuntimeError(f"Forbidden construct at {path.relative_to(root)}:{number}")
     subprocess.run(["lake", "build", *modules], cwd=root, check=True)
     # Import the complete discovered module set, including the root and audit module.
     # This fresh command runs even when Lake reuses compiled build artifacts.
